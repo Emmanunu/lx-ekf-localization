@@ -141,7 +141,7 @@ which should look like
 
 ![duckiematrix_riding](assets/images/duckiematrix-riding.png)
 
-You can then you can drive the Duckiebot around with the 'w', 'a', 's', and 'd' keys. You'll notice that this map includes traffic signs with fiducial 
+You can then drive the Duckiebot around with the 'w', 'a', 's', and 'd' keys. You'll notice that this map includes traffic signs with fiducial 
 markers ([AprilTags](https://april.eecs.umich.edu/software/apriltag)) that we are going to use in this exercise to help localize your robot. 
 
 If you get very lost from the road and you want to come back, you can do so with the 'R' key (note that 
