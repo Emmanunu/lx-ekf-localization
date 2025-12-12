@@ -179,12 +179,10 @@ dts code vnc -R [ROBOT_NAME]
 
 where `[ROBOT_NAME]` could be the real or the virtual robot (use whichever you ran the `dts code workbench` and `dts code build` command with).
 
-This will show you your published pose  
-estimate (blue arrow with a covariance ellipse in purple) as well the ground truth pose of the robot (red arrow which
- should be inside the ellipse if your implementation is correct). 
+This will show you your published pose estimate (blue arrow with a covariance ellipse in purple) as well as the ground truth pose of the robot (red arrow which should be inside the ellipse if your implementation is correct). 
 You will also see markers that correspond to the 
 AprilTag traffic signs in the map. As each one is detected by your camera you will see it change
-color from green to blue. At initialization, it should like this:
+color from green to blue. At initialization, it should look like this:
 
 ![rviz](assets/images/rviz.png)
 
