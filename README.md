@@ -36,7 +36,7 @@ Example instructions to fork a repository and configure to pull from upstream ca
 
 Update your exercise definition and instructions,
 
-    git remote add upstream git@github.com:duckietown/lx-object-detection
+    git remote add upstream git@github.com:duckietown/lx-ekf-localization
     git pull upstream ente
 
 ## 2. Make sure your system is up-to-date
