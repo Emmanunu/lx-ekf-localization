@@ -36,7 +36,7 @@ Example instructions to fork a repository and configure to pull from upstream ca
 
 Update your exercise definition and instructions,
 
-    git remote add upstream git@github.com:duckietown/lx-object-detection
+    git remote add upstream git@github.com:duckietown/lx-ekf-localization
     git pull upstream ente
 
 ## 2. Make sure your system is up-to-date
@@ -141,7 +141,7 @@ which should look like
 
 ![duckiematrix_riding](assets/images/duckiematrix-riding.png)
 
-You can then you can drive the Duckiebot around with the 'w', 'a', 's', and 'd' keys. You'll notice that this map includes traffic signs with fiducial 
+You can then drive the Duckiebot around with the 'w', 'a', 's', and 'd' keys. You'll notice that this map includes traffic signs with fiducial 
 markers ([AprilTags](https://april.eecs.umich.edu/software/apriltag)) that we are going to use in this exercise to help localize your robot. 
 
 If you get very lost from the road and you want to come back, you can do so with the 'R' key (note that 
@@ -179,12 +179,10 @@ dts code vnc -R [ROBOT_NAME]
 
 where `[ROBOT_NAME]` could be the real or the virtual robot (use whichever you ran the `dts code workbench` and `dts code build` command with).
 
-This will show you your published pose  
-estimate (blue arrow with a covariance ellipse in purple) as well the ground truth pose of the robot (red arrow which
- should be inside the ellipse if your implementation is correct). 
+This will show you your published pose estimate (blue arrow with a covariance ellipse in purple) as well as the ground truth pose of the robot (red arrow which should be inside the ellipse if your implementation is correct). 
 You will also see markers that correspond to the 
 AprilTag traffic signs in the map. As each one is detected by your camera you will see it change
-color from green to blue. At initialization, it should like this:
+color from green to blue. At initialization, it should look like this:
 
 ![rviz](assets/images/rviz.png)
 

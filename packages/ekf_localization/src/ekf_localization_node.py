@@ -147,7 +147,7 @@ class EKFLocalizationNode(DTROS):
             CompressedImage,
             queue_size=1,
             dt_topic_type=TopicType.VISUALIZATION,
-            dt_help="Camera image with tag publishs superimposed",
+            dt_help="Camera image with tag publishes superimposed",
             latch=True
         )
 
