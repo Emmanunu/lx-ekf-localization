@@ -3,7 +3,7 @@
 <a href="https://duckietown.com"><img src="./assets/images/dtlogo.png" alt="Duckietown Logo" width="50%"></a>
 </p>
 
-# **Labo 5: Localisation 
+# **Labo 5: Localisation**
 
 Ce laboratoire porte sur l'utilisation des données transmises par les capteurs, combinées à la connaissance de notre environnement, pour estimer notre état. L'approche optimale est le filtre Bayésien ; cependant, sa mise en œuvre ne possède pas de solution analytique connue, sauf dans les configurations les plus simples. Nous explorerons plusieurs approximations du filtre Bayésien : le filtre de Kalman, le filtre particulaire et le filtre à base d'histogrammes. Chacun repose sur des hypothèses et des conditions d'application spécifiques. Enfin, vous programmerez un filtre de Kalman étendu (EKF) pour localiser votre Duckiebot à l'aide des données des encodeurs de roue et des marqueurs de référence AprilTag observés à des emplacements connus.
 
@@ -92,11 +92,11 @@ Une fois que vous avez terminé toutes les tâches des notebooks, vous pouvez su
 
 ## Exécution de votre code
 
-### Tester avec la Duckiematrix
+### Tester avec le Duckiematrix
 
-Il peut être utile de tester votre code dans un environnement de simulation avant de l'essayer sur le robot réel. Pour cela, nous avons la Duckiematrix.
+Il peut être utile de tester votre code dans un environnement de simulation avant de l'essayer sur le robot réel. Pour cela, nous avons le Duckiematrix.
 
-Pour tester votre code dans la Duckiematrix, vous aurez besoin d'un robot virtuel. Vous pouvez en créer un avec la commande suivante:
+Pour tester votre code dans Duckiematrix, vous aurez besoin d'un robot virtuel. Vous pouvez en créer un avec la commande suivante:
 
 ```
 dts duckiebot virtual create [VBOT] -t duckiebot -c DB21J
@@ -135,7 +135,7 @@ Vous devriez voir le simulateur Duckiematrix, basé sur Unity, démarrer. L'écr
 
 ### "Build" votre code
 
-Vous pouvez compiler le code avec
+Vous pouvez build le code avec
 
 ```
 dts code build -R ROBOTNAME
@@ -151,7 +151,7 @@ Vous pouvez ensuite exécuter votre code avec
 dts code workbench -R ROBOTNAME [-m]
 ```
 
-où ROBOTNAME peut être un robot réel ou virtuel, mais s'il s'agit d'un robot virtuel, vous devez inclure l'option `-m` pour indiquer que vous souhaitez le tester dans la Duckiematrix.
+où ROBOTNAME peut être un robot réel ou virtuel, mais s'il s'agit d'un robot virtuel, vous devez inclure l'option `-m` pour indiquer que vous souhaitez le tester dans Duckiematrix.
 
 
 Dans un autre terminal (sur l'ordinateur), vous pouvez lancer le visualiseur `noVNC` pour cet exercice, qui peut être utile pour envoyer des commandes au robot et visualiser l'odométrie que vous calculez dans la fenêtre RViZ.
@@ -167,4 +167,4 @@ Vous pouvez maintenant passer au [premier notebook](./notebooks/01-kalman-filter
 
 # Crédits
 
-Les premiers notebooks sur le filtre de Kalman et le filtre particulaire ont été développés par [Rey Reza Wiyatno](https://rrwiyatn.github.io/).
+Les notebooks Les premiers notebooks sur le filtre de Kalman et le filtre particulaire ont été développés par [Rey Reza Wiyatno](https://rrwiyatn.github.io/).
