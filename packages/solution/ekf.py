@@ -20,50 +20,50 @@ class EKF:
 
         with self.q_mutex:
 
-            # Step 1: update the pose estimate using the kinematic model
-            # TODO: Update these equations
+            # Étape 1 : mettre à jour l'estimation de la pose à l'aide du modèle cinématique
+            # TODO: à faire
             self.q[0] = self.q[0]
             self.q[1] = self.q[1]
             self.q[2] = self.q[2]
 
             self.q[2] = wrap_angle(self.q[2])
 
-            # Step 2: Calculate the process model Jacobians
-            # TODO: Define F and W
+            # Étape 2 : Calcul des jacobiennes du modèle de processus
+            # TODO: Définition de F et W
             F = np.array([])
             W = np.array([])
 
-            # Step 3: update the covariance estimate
-            # TODO: Update this equation
+            # Étape 3: Faire l'estimation de covariance de l'état
+            # TODO: à faire
             self.P = self.P
 
     def update(self, z: np.ndarray, tag_xy: np.ndarray):
-        # z is the measurement in the form [range, bearing]
-        # tag_xy is the tag location of the tag in world coordinates [tag_x, tag_y]
+        # z est la mesure sous la forme [range, bearing]
+        # tag_xy est l'emplacement du AprilTag en coordonnées mondiales [tag_x, tag_y]
 
         with self.q_mutex:
 
-            # Step 1: calculate the predicted range and bearing measurements
-            # TODO: update the equations below
+            # Étape 1: calculer les mesures de portée et de relèvement prévues
+            # TODO: mettre à jours les équations suivants
             rng_pred = 1.0
             bearing_pred = 0.0
             z_pred = np.array([rng_pred, bearing_pred])
 
-            # Step 2: Calculate the innovation
-            # TODO: Define y
+            # Étape 2 : Calculer l'innovation
+            # TODO: Trouver l'innovation y
             y = np.array([0.0, 0.0])
             y[1] = wrap_angle(y[1])
 
-            # Step 3: Calculate the measurement Jacobian
-            # TODO: Define H
+            # Étape 3 : Calculer le jacobien du modèle de mesure
+            # TODO: Trouver H
             H = np.array([])
 
-            # Step 4: Calculate the Kalman gain
-            # TODO: Define K
+            # Étape 4 : Calculer le gain de Kalman
+            # TODO: Trouver K
             K = np.array([])
 
-            # Step 5: Update the state and covariance estimates
-            # TODO: Update these equations
+            # Étape 5 : Mise à jour des estimations de pose et de covariance de pose
+            # TODO: modifier les équations
             self.q = self.q
             self.q[2] = wrap_angle(self.q[2])
             self.P = self.P

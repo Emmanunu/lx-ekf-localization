@@ -1,119 +1,116 @@
+
 <p align="center">
 <a href="https://duckietown.com"><img src="./assets/images/dtlogo.png" alt="Duckietown Logo" width="50%"></a>
 </p>
 
-# **Learning Experience (LX): Localization**
+# **Labo 5: Localisation 
 
-Find the most up-to-date instructions on [how to run LXs on the Duckietown manual](https://docs.duckietown.com/ente/duckietown-manual/60-learning-experiences/lx-general-procedure.html). 
-
-# About these activities
-
-This learning experience is about how we should use the data streaming through the sensors, together with the knowledge
-of our surroundings, to estimate our state. The so-called optimal approach to this is the Bayes filter, however, 
-this approach is computationally intractable in all but the simplest settings. We will explore several approximations
-to the Bayes filter. Namely, the Kalman filter, the particle filter, and the histogram filter. Each has its own
-assumptions and conditions under which it is most applicable. Finally, you will program an extended Kalman filter, 
-or EKF, to localize your Duckiebot using the data from the wheel encoders and the AprilTag fiducial markers that you
-observe at known locations.
-
-This learning experience is provided by the Duckietown team and can be run on Duckiebots. Visit us at the 
-[Duckietown Website](https://www.duckietown.com) for more learning materials, documentation, and demos.
-
-For guided setup instructions, lecture content, and more related to this LX, 
-see [our Self-Driving Cars with Duckietown MOOC on EdX](https://learning.edx.org/course/course-v1:ETHx+DT-01x+1T2025/home).
-
-**(If not already done) Clone this repository**
-
-The recommended way to use this repository is to make a fork and then clone that fork. 
-
-This can be done through the GitHub web interface. However, you are also free to simply clone this repository and get started. 
-
-Example instructions to fork a repository and configure to pull from upstream can be found in the 
-[duckietown-lx repository README](https://github.com/duckietown/duckietown-lx/blob/mooc2022/README.md).
+Cette laboratoire porte sur l'utilisation des données transmises par les capteurs, combinées à la connaissance de notre environnement, pour estimer notre état. L'approche optimale est le filtre Bayésien ; cependant, sa mise en œuvre est calcul insoluble, sauf dans les configurations les plus simples. Nous explorerons plusieurs approximations du filtre Bayésien : le filtre de Kalman, le filtre particulaire et le filtre d'histogramme. Chacun repose sur des hypothèses et des conditions d'application spécifiques. Enfin, vous programmerez un filtre de Kalman étendu (EKF) pour localiser votre Duckiebot à l'aide des données des codeurs de roue et des marqueurs de référence AprilTag observés à des emplacements connus.
 
 
-## 1. Make sure your LX is up-to-date
+##  Mais d'abord...
 
-Update your exercise definition and instructions,
+Assurez-vous que votre système est à jour.
 
-    git remote add upstream git@github.com:duckietown/lx-ekf-localization
-    git pull upstream ente
+- 💻 Veillez toujours à ce que votre  Duckietown Shell soit mise à jour vers la dernière version: 
 
-## 2. Make sure your system is up-to-date
+```
+     pipx upgrade duckietown-shell
+```
 
-- 💻 This is an `ente` learning experience (note the branch name). Make sure your Duckietown Shell is set to an `ente` profile 
-- (and not, e.g., a `daffy` one). You can check your current distribution with
+- 💻 Mettre à jour les commandes du shell: 
 
-    dts profile list
+```
+     dts update
+```
 
-  To switch to an ente profile, follow the [Duckietown Manual DTS installation instructions](https://docs.duckietown.com/ente/duckietown-manual/10-setup/02-software/duckietown-shell-dts-installation.html#dt-account-switch-profile).
+- 💻 Assurez-vous que toutes les images Docker présentes sur votre ordinateur sont à jour: 
 
+```
+     dts desktop update
+```
 
-- 💻 Always make sure your Duckietown Shell is updated to the latest version. See [installation instructions](https://github.com/duckietown/duckietown-shell)
-
-- 💻 Update the shell commands: `dts update`
-
-- 💻 Update your laptop/desktop: `dts desktop update`
-
-- 🚙 Update your Duckiebot: `dts duckiebot update ROBOTNAME` (where `ROBOTNAME` is the name of your Duckiebot - real or virtual.)
-
-**Note**: if your virtual robot hangs indefinitely when you try to update it, you can try to restart it with:
-
-    dts duckiebot virtual restart ROBOTNAME
+- 💻 Arrêtez et supprimez tous les conteneurs Docker existants (que l'autre groupe aurait pu laisser par erreur):
 
 
-## 3. Work on the exercise
+```
+     docker stop $(docker ps -aq)
+     docker rm $(docker ps -aq)
+```     
 
-### Launch the code editor
+- 💻 Vous devrez peut-être également supprimer ce répertoire temporaire pour avoir les autorisations nécessaires pour y écrire.
 
-#### SSL certificate
+```
+     sudo rm /tmp/duckiematrix
+```
+   
+- 🚙 Assurez-vous que toutes les images Docker présentes sur votre ordinateur sont à jour: 
 
-If you have not done so already, set up your local SSL certificate needed to run the learning experience editor with:
+```
+    dts duckiebot update ROBOTNAME
+```
 
-    sudo apt install libnss3-tools
-    dts setup mkcert
+(où ROBOTNAME est le nom de votre Duckiebot — réel ou virtuel.)
+
+# Avant de commencer
+
+Chaque caméra étant potentiellement fabriquée différemment et montée à un endroit légèrement différent sur le robot, il sera nécessaire de la calibrer. Cette opération comprendra deux parties :
+
+- Calibrage intrinsèque de la caméra
+- Calibrage extrinsèque de la caméra
+
+Follow [these instructions](https://docs.duckietown.com/ente/duckietown-manual/20-operations/04-calibrations/duckiebot-camera-calibration.html) for both parts.  
 
 
-Open the code editor by running the following command,
+
+
+# Comment réaliser cet exercice de laboratoire ?
+
+## Lancez l'éditeur de code.
+
+Ouvrez l'éditeur de code (VSCode) en exécutant la commande suivante:
 
 ```
 dts code editor
 ```
 
-Wait for a URL to appear on the terminal, then click on it or copy-paste it in the address bar
-of your browser to access the code editor. The first thing you will see in the code editor is
-this same document, you can continue there.
+Attendez qu'une URL s'affiche dans le terminal, puis cliquez dessus ou copiez-la et collez-la dans la barre d'adresse de votre navigateur pour accéder à l'éditeur de code. Le premier élément que vous verrez dans l'éditeur de code est ce même document. 
 
-**NOTE**: if you are running Duckietown inside a devcontainer, make sure to [install the certificate for your host machine as well](https://docs.duckietown.com/ente/duckietown-manual/10-setup/setup-devcontainer.html#dts-code-run). 
+**Vous pouvez poursuivre votre travail à partir de là**
 
 
-### Walkthrough of notebooks
+## Les notebooks "Jupyter"
 
-**NOTE**: You should be reading this from inside the code editor in your browser.
+**REMARQUE** : Vous devez lire ce message depuis l'éditeur de code de votre navigateur.
 
-Inside the code editor, use the navigator sidebar on the left-hand side to navigate to the
-`notebooks` directory and open the first notebook.
+Dans l'éditeur de code, utilisez la barre latérale de navigation située à gauche pour accéder au
+dossier `notebooks` et ouvrir le premier notebook.
 
-Follow the instructions on the notebook and work through the notebooks in sequence.
+Suivez les instructions du notebook et parcourez les notebooks dans l'ordre.
 
+Une fois que vous avez terminé toutes les tâches des notebooks, vous pouvez suivre les instructions suivantes pour tester votre code.
 
-### Testing with the Duckiematrix
+## Exécution de votre code
 
-To test your code in the Duckiematrix you will need a virtual robot. You can create one with the command:
+### Tester avec le Duckiematrix
 
-```
-dts duckiebot virtual create --type duckiebot --configuration DB21J VBOT
-```
+Il peut être utile de tester votre code dans un environnement de simulation avant de l'essayer sur le robot réel. Pour cela, nous avons le Duckiematrix.
 
-where `VBOT` is the hostname. It can be anything you like, with [some constraints](https://docs.duckietown.com/ente/duckietown-manual/10-setup/03-duckiebot/flashing-sd-card-duckiebot-initialization-complete.html). Make sure to remember your robot (host)name for later.
-
-Then you can start your virtual robot with the command:
+Pour tester votre code dans Duckiematrix, vous aurez besoin d'un robot virtuel. Vous pouvez en créer un avec la commande suivante:
 
 ```
-dts duckiebot virtual start VBOT
+dts duckiebot virtual create [VBOT] -t duckiebot -c DB21J
 ```
 
-You should see it with a status `Booting` and finally `Ready` if you look at `dts fleet discover`: 
+où `[VBOT]` peut être n'importe quoi (mais n'oubliez pas ce nom pour la suite).
+
+Vous pouvez ensuite démarrer votre robot virtuel avec la commande:
+
+```
+dts duckiebot virtual start [VBOT] --pull
+```
+
+Vous devriez le voir avec le statut « Booting » (démarrage) et enfin « Ready » (prêt) si vous consultez la commande `dts fleet discover` :
 
 ```
      | Hardware |   Type    | Model |  Status  | Hostname 
@@ -121,82 +118,53 @@ You should see it with a status `Booting` and finally `Ready` if you look at `dt
 [VBOT] |  virtual | duckiebot | DB21J |  Ready   | [VBOT].local
 ```
 
-Now that your virtual robot is ready, you can start the Duckiematrix. From a terminal in this exercise directory that you 
-cloned do:
+Maintenant que votre robot virtuel est prêt, vous pouvez démarrer Duckiematrix. Depuis ce répertoire d'exercices, exécutez la commande suivante :
 
 ```
 dts code start_matrix
 ```
 
-You should see the Unity-based Duckiematrix simulator start up. The startup screen will look like:
+Vous devriez voir le simulateur Duckiematrix, basé sur Unity, démarrer. L'écran de démarrage ressemblera à ceci :
 
-![duckiematrix_start](assets/images/duckiematrix-start.png)
+![duckiematrix_start](assets/duckiematrix_start.png)
 
-Your Duckiebot is at the start of a long straightaway with duckies crossing the road. 
+À partir d'ici, vous pouvez cliquer n'importe où dans la fenêtre et appuyer sur la touche [ENTRÉE] pour l'activer. Vous pouvez ensuite déplacer le petit canard vers le Duckiebot à l'aide des touches « w », « a », « s » et « d », ou modifier l'angle de la caméra pour observer le Duckiebot avec la souris. Vous pouvez également passer à une vue de dessus en appuyant sur la touche « v », ce qui vous donnera une vue similaire à celle-ci :
 
-From here you can click anywhere on the window and click [ENTER] to make it become active. 
-From here you can move the duckie towards the Duckiebot with the 'w', 'a', 's', and 'd' keys or you can move the 
-camera angle to view the Duckiebot with the mouse. If you are close enough to your Duckiebot, you can jump on with the 'E' key, 
-which should look like
-
-![duckiematrix_riding](assets/images/duckiematrix-riding.png)
-
-You can then drive the Duckiebot around with the 'w', 'a', 's', and 'd' keys. You'll notice that this map includes traffic signs with fiducial 
-markers ([AprilTags](https://april.eecs.umich.edu/software/apriltag)) that we are going to use in this exercise to help localize your robot. 
-
-If you get very lost from the road and you want to come back, you can do so with the 'R' key (note that 
-you should do this for the exercise before testing every time since the initial state estimate coincides
-with the reset position). 
+![duckiematrix_overhead](assets/duckiematrix_overhead.png)
 
 
-### Building your code
+### "Build" votre code
 
-You can build your code with 
+Vous pouvez build le code avec
 
 ```
-dts code build -R ROBOT_NAME 
+dts code build -R ROBOTNAME
 ```
 
-This will build a docker image with your code compiled inside.
+où ROBOTNAME peut être un robot réel ou virtuel.
 
+### Tester le code
 
-### 💻 Testing 
-
-
-To test your code by running:
+Vous pouvez ensuite exécuter votre code avec
 
 ```
-dts code workbench [-m] -R ROBOT_NAME 
+dts code workbench -R ROBOTNAME [-m]
 ```
 
-You should include the `-m` if `ROBOT_NAME` is a virtual robot to indicate that you are running in the Duckiematrix.
+où ROBOTNAME peut être un robot réel ou virtuel, mais s'il s'agit d'un robot virtuel, vous devez inclure l'option `-m` pour indiquer que vous souhaitez le tester dans Duckiematrix.
 
-In another terminal, you can launch the `noVNC` viewer for this exercise and open RViz. 
+
+Dans un autre terminal (sur l'ordinateur), vous pouvez lancer le visualiseur `noVNC` pour cet exercice, qui peut être utile pour envoyer des commandes au robot et visualiser l'odométrie que vous calculez dans la fenêtre RViZ.
 
 ```
-dts code vnc -R [ROBOT_NAME]
+dts code vnc -R [ROBOTNAME]
 ```
 
-where `[ROBOT_NAME]` could be the real or the virtual robot (use whichever you ran the `dts code workbench` and `dts code build` command with).
+où `[ROBOTNAME]` peut être le robot réel ou virtuel (utilisez celui avec lequel vous avez exécuté la commande `dts code workbench`).
 
-This will show you your published pose estimate (blue arrow with a covariance ellipse in purple) as well as the ground truth pose of the robot (red arrow which should be inside the ellipse if your implementation is correct). 
-You will also see markers that correspond to the 
-AprilTag traffic signs in the map. As each one is detected by your camera you will see it change
-color from green to blue. At initialization, it should look like this:
 
-![rviz](assets/images/rviz.png)
+Vous pouvez maintenant passer au [premier notebook](./notebooks/01-kalman-filter/kalman-filter.ipynb).
 
-You can also look at an image that shows the tags that are being detected. It is published on the topic `/ROBOT_NAME/detections/image/compressed` (for example you can view with `rqt_image_viewer`).
+# Crédits
 
-This output should look like this:
-
-![apriltag-detections](assets/images/apriltag-detections.png)
-
-You may also use the joystick to pilot your robot and test that the localization performance
-of your Duckiebot as it moves.
-
-Now you can proceed to the [first notebook](./notebooks/01-kalman-filter/kalman-filter.ipynb).
-
-# Credits
-
-The Kalman filter and particle filter notebooks were created by [Rey Reza Wiyatno](https://rrwiyatn.github.io/)
+Les notebooks Les premiers notebooks sur le filtre de Kalman et le filtre particulaire ont été développés par [Rey Reza Wiyatno](https://rrwiyatn.github.io/).
