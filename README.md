@@ -5,14 +5,14 @@
 
 # **Labo 5: Localisation 
 
-Cette laboratoire porte sur l'utilisation des données transmises par les capteurs, combinées à la connaissance de notre environnement, pour estimer notre état. L'approche optimale est le filtre Bayésien ; cependant, sa mise en œuvre est calcul insoluble, sauf dans les configurations les plus simples. Nous explorerons plusieurs approximations du filtre Bayésien : le filtre de Kalman, le filtre particulaire et le filtre d'histogramme. Chacun repose sur des hypothèses et des conditions d'application spécifiques. Enfin, vous programmerez un filtre de Kalman étendu (EKF) pour localiser votre Duckiebot à l'aide des données des codeurs de roue et des marqueurs de référence AprilTag observés à des emplacements connus.
+Ce laboratoire porte sur l'utilisation des données transmises par les capteurs, combinées à la connaissance de notre environnement, pour estimer notre état. L'approche optimale est le filtre Bayésien ; cependant, sa mise en œuvre ne possède pas de solution analytique connue, sauf dans les configurations les plus simples. Nous explorerons plusieurs approximations du filtre Bayésien : le filtre de Kalman, le filtre particulaire et le filtre à base d'histogrammes. Chacun repose sur des hypothèses et des conditions d'application spécifiques. Enfin, vous programmerez un filtre de Kalman étendu (EKF) pour localiser votre Duckiebot à l'aide des données des encodeurs de roue et des marqueurs de référence AprilTag observés à des emplacements connus.
 
 
 ##  Mais d'abord...
 
 Assurez-vous que votre système est à jour.
 
-- 💻 Veillez toujours à ce que votre  Duckietown Shell soit mise à jour vers la dernière version: 
+- 💻 Veillez toujours à ce que votre Duckietown Shell soit mise à jour vers la dernière version: 
 
 ```
      pipx upgrade duckietown-shell
@@ -30,7 +30,7 @@ Assurez-vous que votre système est à jour.
      dts desktop update
 ```
 
-- 💻 Arrêtez et supprimez tous les conteneurs Docker existants (que l'autre groupe aurait pu laisser par erreur):
+- 💻 Arrêtez et supprimez tous les conteneurs Docker existants (que l'autre groupe aurait pu laisser ouverts par erreur):
 
 
 ```
@@ -41,7 +41,7 @@ Assurez-vous que votre système est à jour.
 - 💻 Vous devrez peut-être également supprimer ce répertoire temporaire pour avoir les autorisations nécessaires pour y écrire.
 
 ```
-     sudo rm /tmp/duckiematrix
+     sudo rm -rf /tmp/duckiematrix
 ```
    
 - 🚙 Assurez-vous que toutes les images Docker présentes sur votre ordinateur sont à jour: 
@@ -50,7 +50,7 @@ Assurez-vous que votre système est à jour.
     dts duckiebot update ROBOTNAME
 ```
 
-(où ROBOTNAME est le nom de votre Duckiebot — réel ou virtuel.)
+(où ROBOTNAME est le nom de votre Duckiebot — réel ou virtuel. Assurez vous que ce dernier soit actif.)
 
 # Avant de commencer
 
@@ -59,7 +59,7 @@ Chaque caméra étant potentiellement fabriquée différemment et montée à un 
 - Calibrage intrinsèque de la caméra
 - Calibrage extrinsèque de la caméra
 
-Follow [these instructions](https://docs.duckietown.com/ente/duckietown-manual/20-operations/04-calibrations/duckiebot-camera-calibration.html) for both parts.  
+Suivez ces [instructions](https://docs.duckietown.com/ente/duckietown-manual/20-operations/04-calibrations/duckiebot-camera-calibration.html) pour les deux parties.  
 
 
 
@@ -92,11 +92,11 @@ Une fois que vous avez terminé toutes les tâches des notebooks, vous pouvez su
 
 ## Exécution de votre code
 
-### Tester avec le Duckiematrix
+### Tester avec la Duckiematrix
 
-Il peut être utile de tester votre code dans un environnement de simulation avant de l'essayer sur le robot réel. Pour cela, nous avons le Duckiematrix.
+Il peut être utile de tester votre code dans un environnement de simulation avant de l'essayer sur le robot réel. Pour cela, nous avons la Duckiematrix.
 
-Pour tester votre code dans Duckiematrix, vous aurez besoin d'un robot virtuel. Vous pouvez en créer un avec la commande suivante:
+Pour tester votre code dans la Duckiematrix, vous aurez besoin d'un robot virtuel. Vous pouvez en créer un avec la commande suivante:
 
 ```
 dts duckiebot virtual create [VBOT] -t duckiebot -c DB21J
@@ -126,16 +126,16 @@ dts code start_matrix
 
 Vous devriez voir le simulateur Duckiematrix, basé sur Unity, démarrer. L'écran de démarrage ressemblera à ceci :
 
-![duckiematrix_start](assets/duckiematrix_start.png)
+![duckiematrix_start](assets/images/duckiematrix-start.png)
 
 À partir d'ici, vous pouvez cliquer n'importe où dans la fenêtre et appuyer sur la touche [ENTRÉE] pour l'activer. Vous pouvez ensuite déplacer le petit canard vers le Duckiebot à l'aide des touches « w », « a », « s » et « d », ou modifier l'angle de la caméra pour observer le Duckiebot avec la souris. Vous pouvez également passer à une vue de dessus en appuyant sur la touche « v », ce qui vous donnera une vue similaire à celle-ci :
 
-![duckiematrix_overhead](assets/duckiematrix_overhead.png)
+![duckiematrix_overhead](assets/images/duckiematrix-overhead.png)
 
 
 ### "Build" votre code
 
-Vous pouvez build le code avec
+Vous pouvez compiler le code avec
 
 ```
 dts code build -R ROBOTNAME
@@ -151,7 +151,7 @@ Vous pouvez ensuite exécuter votre code avec
 dts code workbench -R ROBOTNAME [-m]
 ```
 
-où ROBOTNAME peut être un robot réel ou virtuel, mais s'il s'agit d'un robot virtuel, vous devez inclure l'option `-m` pour indiquer que vous souhaitez le tester dans Duckiematrix.
+où ROBOTNAME peut être un robot réel ou virtuel, mais s'il s'agit d'un robot virtuel, vous devez inclure l'option `-m` pour indiquer que vous souhaitez le tester dans la Duckiematrix.
 
 
 Dans un autre terminal (sur l'ordinateur), vous pouvez lancer le visualiseur `noVNC` pour cet exercice, qui peut être utile pour envoyer des commandes au robot et visualiser l'odométrie que vous calculez dans la fenêtre RViZ.
@@ -167,4 +167,4 @@ Vous pouvez maintenant passer au [premier notebook](./notebooks/01-kalman-filter
 
 # Crédits
 
-Les notebooks Les premiers notebooks sur le filtre de Kalman et le filtre particulaire ont été développés par [Rey Reza Wiyatno](https://rrwiyatn.github.io/).
+Les premiers notebooks sur le filtre de Kalman et le filtre particulaire ont été développés par [Rey Reza Wiyatno](https://rrwiyatn.github.io/).
