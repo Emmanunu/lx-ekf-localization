@@ -162,6 +162,20 @@ dts code vnc -R [ROBOTNAME]
 
 où `[ROBOTNAME]` peut être le robot réel ou virtuel (utilisez celui avec lequel vous avez exécuté la commande `dts code workbench`).
 
+Ceci affichera l'estimation de pose publiée (flèche bleue avec une ellipse de covariance violette) ainsi que la pose réelle du robot (flèche rouge qui devrait se trouver à l'intérieur de l'ellipse si votre implémentation est correcte).
+
+Vous verrez également des marqueurs correspondant aux AprilTags sur la carte. À mesure que votre caméra détecte un AprilTag, sa couleur change
+du vert au bleu. À l'initialisation, l'affichage devrait ressembler à ceci :
+
+![rviz](assets/images/rviz.png)
+
+Vous pouvez également consulter une image montrant les AprilTags détectées. Elle est publiée sur le topic `/ROBOT_NAME/detections/image/compressed` (for example you can view with `rqt_image_viewer`).
+
+Le résultat devrait ressembler à ceci :
+
+![apriltag-detections](assets/images/apriltag-detections.png)
+
+Vous devriez maintenant utiliser le joystick pour piloter votre robot et tester les performances de localisation de votre Duckiebot lorsqu'il se déplace.
 
 Vous pouvez maintenant passer au [premier notebook](./notebooks/01-kalman-filter/kalman-filter.ipynb).
 
