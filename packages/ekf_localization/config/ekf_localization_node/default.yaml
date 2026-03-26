@@ -3,8 +3,8 @@ no_update: False
 
 test_sim: False
 
-# this is the initial pose of the duckiebot in the Duckiematrix
-# For real robot experiment you may need to update
+# Ceci est l'état initial du duckiebot dans la Duckiematrix
+# Pour expérimenter avec le vrai robot, vous devrez mettre ces paramètres à jour.
 x_0: 0.41
 y_0: 0.61
 theta_0: 1.57
